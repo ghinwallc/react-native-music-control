@@ -145,8 +145,15 @@ RCT_EXPORT_METHOD(enableControl:(NSString *) controlName enabled:(BOOL) enabled)
 
 RCT_EXPORT_METHOD(enableBackgroundMode:(BOOL) enabled){
     AVAudioSession *session = [AVAudioSession sharedInstance];
-    [session setCategory: AVAudioSessionCategoryPlayback error: nil];
-    [session setActive: enabled error: nil];
+    NSError *error;
+
+    if (![session setCategory:AVAudioSessionCategoryPlayback error:&error]) {
+        NSAssert(NO, error.localizedDescription);
+    }
+
+    if (![session setActive:enabled error:&error]) {
+        NSAssert(NO, error.localizedDescription);
+    }
 }
 
 #pragma mark internal
