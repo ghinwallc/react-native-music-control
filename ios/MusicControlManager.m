@@ -225,19 +225,14 @@ RCT_EXPORT_METHOD(enableBackgroundMode:(BOOL) enabled){
             return;
         }
 
-        // check whether image is loaded
-        CGImageRef cgref = [image CGImage];
-        CIImage *cim = [image CIImage];
-        if (cim != nil || cgref != NULL) {
-            // Callback to main queue to set nowPlayingInfo
-            dispatch_async(dispatch_get_main_queue(), ^{
-                MPNowPlayingInfoCenter *center = [MPNowPlayingInfoCenter defaultCenter];
-                MPMediaItemArtwork *artwork = [[MPMediaItemArtwork alloc] initWithImage: image];
-                NSMutableDictionary *mediaDict = (center.nowPlayingInfo != nil) ? [[NSMutableDictionary alloc] initWithDictionary: center.nowPlayingInfo] : [NSMutableDictionary dictionary];
-                [mediaDict setValue:artwork forKey:MPMediaItemPropertyArtwork];
-                center.nowPlayingInfo = mediaDict;
-            });
-        }
+        // Callback to main queue to set nowPlayingInfo
+        dispatch_async(dispatch_get_main_queue(), ^{
+            MPNowPlayingInfoCenter *center = [MPNowPlayingInfoCenter defaultCenter];
+            MPMediaItemArtwork *artwork = [[MPMediaItemArtwork alloc] initWithImage: image];
+            NSMutableDictionary *mediaDict = (center.nowPlayingInfo != nil) ? [[NSMutableDictionary alloc] initWithDictionary: center.nowPlayingInfo] : [NSMutableDictionary dictionary];
+            [mediaDict setValue:artwork forKey:MPMediaItemPropertyArtwork];
+            center.nowPlayingInfo = mediaDict;
+        });
     });
 }
 
